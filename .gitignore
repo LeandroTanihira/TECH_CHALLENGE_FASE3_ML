@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+
+# Dados (gerados ou volumosos — reproduzíveis via pipeline)
+data/gold/
+data/silver/
+data/processed/
+data/raw/*.csv
+!data/raw/README.md
+
+data/analytic/
+data/fase2_oficial/
+
+# SO / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
