@@ -1,0 +1,40 @@
+{
+  "params": {
+    "colsample_bytree": 0.8856351733429728,
+    "learning_rate": 0.02321793559503287,
+    "min_child_samples": 280,
+    "n_estimators": 240,
+    "num_leaves": 42,
+    "reg_alpha": 2.8340904295147746,
+    "reg_lambda": 3.499331111708852,
+    "subsample": 0.7323592099410596
+  },
+  "threshold": 0.54,
+  "features": [
+    "esc_pct_alf_ant",
+    "esc_prof_media_ant",
+    "esc_taxa_presenca_ant",
+    "esc_n_alunos_ant",
+    "esc_n_matriculados",
+    "mun_taxa_rede_ant",
+    "mun_taxa_publica_ant",
+    "mun_media_port_ant",
+    "mun_participacao_ant",
+    "mun_meta_ano_alvo",
+    "uf_taxa_ant",
+    "uf_meta_ano_alvo",
+    "capital",
+    "dist_capital_km",
+    "populacao_2019",
+    "cresc_pop_2012_2019_pct",
+    "pib_per_capita_2010",
+    "latitude",
+    "longitude",
+    "rede",
+    "sigla_uf",
+    "regiao",
+    "porte_municipio"
+  ],
+  "treino_ano_ctx": 2023,
+  "treino_ano_alvo": 2024
+}
