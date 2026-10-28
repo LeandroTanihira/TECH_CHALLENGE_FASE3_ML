@@ -1,6 +1,10 @@
 # Predição e Inteligência Analítica para Alfabetização no Brasil
 
+[![CI](https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE3_ML/actions/workflows/ci.yml/badge.svg)](https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE3_ML/actions/workflows/ci.yml)
+
 **Tech Challenge — Fase 3 · POSTECH FIAP (1IAST)**
+
+> 🎬 **Vídeo executivo:** _link a inserir após a gravação_ · 📋 **Checklist de entrega:** [`docs/entrega.md`](docs/entrega.md)
 
 Modelos de Machine Learning sobre a camada Gold do **Indicador Criança Alfabetizada** para prever se um aluno será
 alfabetizado, identificar os municípios com maior risco de não atingir as metas e agrupar territórios com padrões semelhantes.
@@ -270,7 +274,9 @@ tech-challenge-fase3/
 │   ├── modeling/                 # pipelines, treino/CV/tuning, risco municipal e clusters
 │   ├── evaluation/               # métricas, por subgrupo, permutação e SHAP
 │   └── visualization/            # estilo e gráficos padronizados
-├── tests/                        # emulador do lake oficial + testes do adaptador
+├── tests/                        # testes da pipeline (dados sintéticos) + adaptador da Fase 2
+├── .github/                      # CI (GitHub Actions), templates de PR e issue
+├── scripts/                      # publicar_github.sh — cria o repositório e publica branches/PRs
 ├── models/                       # modelos .joblib + metadados .json
 ├── reports/                      # métricas, rankings, clusters, painel para gestores
 ├── images/                       # figuras usadas no README e nos notebooks
@@ -290,7 +296,7 @@ set DATALAKE_BUCKET=tech-challenge-alfabetizacao-<sufixo>   # Linux/Mac: export 
 
 python -m src.main            # pipeline completa (~40 min em 2 núcleos)  |  --fast para teste rápido
 jupyter lab notebooks/        # ou execute os notebooks 01 → 04
-pytest tests -q               # valida o adaptador do layout oficial (requer os CSVs da Base dos Dados)
+pytest tests -q               # testes da pipeline; os do adaptador rodam se os CSVs da Base dos Dados estiverem disponíveis
 ```
 
 Reprodutibilidade: semente fixa (`RANDOM_STATE=42`) em splits, CV, busca e modelos; versões mínimas em `requirements.txt`.
@@ -308,6 +314,10 @@ Fluxo **Git Flow simplificado**, igual ao da Fase 2: `main` protegida + branches
 | `feature/interpretabilidade` | permutação, SHAP, notebook 03 |
 | `feature/aplicacao-estrategica` | risco municipal, clusters, notebook 04 |
 | `docs/readme-e-video` | README, decisões analíticas, roteiro do vídeo |
+| `chore/estrutura-github` | CI, templates de PR/issue, CONTRIBUTING, testes da pipeline, checklist de entrega |
+
+Todo PR passa pelo **CI** (GitHub Actions: instalação limpa em Python 3.10 e 3.12, testes e validação dos notebooks) e segue o
+[template de PR](.github/pull_request_template.md). Regras de contribuição em [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 As decisões analíticas estão registradas em [`docs/decisoes_analiticas.md`](docs/decisoes_analiticas.md); o roteiro do vídeo executivo em
 [`docs/roteiro_video.md`](docs/roteiro_video.md).
