@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  testes:
+    name: Testes da pipeline de ML
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest
+
+      - name: Verificar importação dos módulos
+        run: python -c "import src.main, src.preprocessing.fase2_adapter, src.modeling.strategic"
+
+      - name: Rodar testes
+        run: pytest tests -v
+
+      - name: Validar notebooks (JSON bem-formado)
+        run: python -c "import nbformat, glob; [nbformat.validate(nbformat.read(f, as_version=4)) for f in glob.glob('notebooks/*.ipynb')]; print('notebooks ok')"
