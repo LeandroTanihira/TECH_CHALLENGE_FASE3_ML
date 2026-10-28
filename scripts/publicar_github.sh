@@ -27,7 +27,7 @@ FASE2="https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE2_PIPELINE"
 cd "$(git rev-parse --show-toplevel)"
 SOURCE_BRANCH="${SOURCE_BRANCH:-main}"
 
-if [[ -n "$(git status --porcelain)" ]]; then
+if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
   echo "✖ Há alterações não commitadas. Faça commit antes de publicar." >&2; exit 1
 fi
 
