@@ -1,7 +1,5 @@
 # Predição e Inteligência Analítica para Alfabetização no Brasil
 
-[![CI](https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE3_ML/actions/workflows/ci.yml/badge.svg)](https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE3_ML/actions/workflows/ci.yml)
-
 **Tech Challenge — Fase 3 · POSTECH FIAP (1IAST)**
 
 > 🎬 **Vídeo executivo:** _link a inserir após a gravação_ · 📋 **Checklist de entrega:** [`docs/entrega.md`](docs/entrega.md)
