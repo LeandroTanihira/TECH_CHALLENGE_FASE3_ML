@@ -15,6 +15,7 @@ data/raw/*.csv
 
 data/analytic/
 data/fase2_oficial/
+outputs_amostra/
 
 # SO / IDE
 .DS_Store
