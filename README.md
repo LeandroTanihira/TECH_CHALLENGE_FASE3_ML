@@ -12,15 +12,9 @@ alfabetizado, identificar os municípios com maior risco de não atingir as meta
 > (BigQuery/Base dos Dados → S3 Bronze → Glue Silver/Gold → Athena). Esta Fase 3 consome as camadas Silver/Gold produzidas por ela
 > (§ 3 explica a integração).
 
-## Integrantes
+## Autor
 
-| Nome | RM |
-|---|---|
-| Leandro Tanihira | _RM_ |
-| _Integrante 2_ | _RM_ |
-| _Integrante 3_ | _RM_ |
-| _Integrante 4_ | _RM_ |
-| _Integrante 5_ | _RM_ |
+**Leandro Tanihira** — RM: _____ (projeto desenvolvido individualmente)
 
 ---
 
@@ -336,7 +330,7 @@ Reprodutibilidade: semente fixa (`RANDOM_STATE=42`) em splits, CV, busca e model
 
 ## 14. Versionamento e colaboração
 
-Fluxo **Git Flow simplificado**, igual ao da Fase 2: `main` protegida + branches de feature integradas via **Pull Request** com revisão.
+Fluxo **Git Flow simplificado**, igual ao da Fase 2: `main` protegida + branches de feature integradas via **Pull Request**, cada uma validada pelo CI antes do merge.
 
 | Branch | Conteúdo |
 |---|---|

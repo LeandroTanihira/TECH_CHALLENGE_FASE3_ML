@@ -8,8 +8,8 @@
    - `docs/<tema>` — documentação
    - `chore/<tema>` — estrutura, configuração, CI
 3. Faça commits pequenos e descritivos (convenção abaixo).
-4. Abra um **Pull Request** para a `main` usando o template; peça revisão de pelo menos um integrante.
-5. O PR só é integrado com o **CI verde** e a revisão aprovada (merge commit, sem *squash*, para preservar o histórico).
+4. Abra um **Pull Request** para a `main` usando o template e revise o diff com o checklist.
+5. O PR só é integrado com o **CI verde** (merge commit, sem *squash*, para preservar o histórico).
 
 ## Convenção de commits
 `<tipo>(<escopo opcional>): <descrição no imperativo>` — tipos: `feat`, `fix`, `docs`, `test`, `chore`, `refactor`.

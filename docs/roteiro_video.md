@@ -46,4 +46,4 @@ Telas sugeridas entre colchetes (imagens em `images/`).
 > Os limites — poucos ciclos e falta de dados individuais — estão documentados, e o próximo passo é integrar o Censo Escolar."
 
 ---
-**Checklist de gravação:** câmera aberta de todos os integrantes · slides com as figuras de `images/` · cronômetro ≤ 5:00 · link do repositório na tela final.
+**Checklist de gravação:** câmera aberta do apresentador · slides com as figuras de `images/` · cronômetro ≤ 5:00 · link do repositório na tela final.
