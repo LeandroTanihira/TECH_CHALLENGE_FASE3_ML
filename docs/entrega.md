@@ -31,7 +31,7 @@ Mapa entre o que o enunciado pede e onde está no repositório.
 
 | Exigido | Presente |
 |---|---|
-| `data/` | ✅ (`raw/`, `external/`; dados volumosos gerados pela pipeline) |
+| `data/` | ✅ (`amostra/` versionada para rodar sem o data lake, `external/`; dados volumosos gerados pela pipeline) |
 | `notebooks/` | ✅ |
 | `src/preprocessing`, `src/modeling`, `src/evaluation`, `src/visualization` | ✅ |
 | `reports/`, `images/` | ✅ |
@@ -48,6 +48,7 @@ Mapa entre o que o enunciado pede e onde está no repositório.
 | Organização colaborativa | `CONTRIBUTING.md`, templates de PR e issue, CI obrigatório |
 
 ## Antes de entregar
+- [ ] Preencher o RM na seção "Autor" do README
 - [ ] Gravar o vídeo e colar o link aqui e no README (seção "Vídeo executivo")
 - [ ] Conferir se o CI está verde na `main`
 - [ ] Confirmar que o repositório está público (ou com acesso dado aos professores)

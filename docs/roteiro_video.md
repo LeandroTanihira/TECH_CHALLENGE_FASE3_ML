@@ -13,7 +13,8 @@ Telas sugeridas entre colchetes (imagens em `images/`).
 [`eda_alvo_tendencia.png` → `eda_uf_2024.png`]
 
 ### 0:40 – 1:20 · O que fizemos
-> "Usamos a plataforma de dados construída na fase anterior — resultados, metas, território e 2 milhões de microdados de alunos —
+> "Usamos a plataforma de dados construída na fase anterior — resultados, metas, território e os microdados **completos** de alunos
+> (2,1 milhões em 2024; a extração na nuvem usava amostra de 2%, então reprocessamos a tabela inteira pela mesma arquitetura) —
 > e acrescentamos dados do IBGE. Treinamos modelos que usam apenas o que se sabe **antes** da prova: o histórico do ano anterior,
 > as metas e o contexto do município. Validamos em municípios que o modelo **nunca viu**."
 
@@ -45,4 +46,4 @@ Telas sugeridas entre colchetes (imagens em `images/`).
 > Os limites — poucos ciclos e falta de dados individuais — estão documentados, e o próximo passo é integrar o Censo Escolar."
 
 ---
-**Checklist de gravação:** câmera aberta de todos os integrantes · slides com as figuras de `images/` · cronômetro ≤ 5:00 · link do repositório na tela final.
+**Checklist de gravação:** câmera aberta do apresentador · slides com as figuras de `images/` · cronômetro ≤ 5:00 · link do repositório na tela final.

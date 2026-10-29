@@ -9,7 +9,11 @@ Ordem de resolução do data lake:
 2. ``DATALAKE_BUCKET`` — mesma variável do repositório da Fase 2 → ``s3://<bucket>``;
 3. ``data/fase2_oficial/`` — cópia local do bucket (``aws s3 sync``, ver README);
 4. ``../Desafio - Fase 2/datalake`` — execução local da pipeline da Fase 2;
-5. ``data/`` deste repositório (cópia local opcional: ``data/gold`` e ``data/silver``).
+5. ``data/`` deste repositório (cópia local opcional: ``data/gold`` e ``data/silver``);
+6. ``data/amostra/`` — **amostra versionada** (Gold completa + alunos de ~10% dos municípios),
+   usada automaticamente quando nenhum data lake está disponível (ex.: quem clona o
+   repositório para corrigir). Force com ``FASE3_AMOSTRA=1``. Nesse modo as saídas vão para
+   ``outputs_amostra/`` para não sobrescrever os resultados oficiais versionados.
 
 Dois *layouts* são suportados e detectados automaticamente:
 
@@ -26,7 +30,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 FASE2_REPO_URL = "https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE2_PIPELINE"
 
 
+AMOSTRA_DIR = PROJECT_ROOT / "data" / "amostra"
+
+
 def _resolve_datalake():
+    if os.environ.get("FASE3_AMOSTRA") == "1":
+        return AMOSTRA_DIR
     env = os.environ.get("FASE2_DATALAKE")
     if env:
         return env if env.startswith("s3://") else Path(env)
@@ -38,7 +47,7 @@ def _resolve_datalake():
                  PROJECT_ROOT / "data"):
         if (cand / "gold").exists():
             return cand
-    return PROJECT_ROOT / "data"
+    return AMOSTRA_DIR
 
 
 def _detect_layout(root) -> str:
@@ -55,14 +64,22 @@ FASE2_LAYOUT = _detect_layout(DATALAKE)
 GOLD_DIR = Path(DATALAKE) / "gold" if not str(DATALAKE).startswith("s3://") else None
 SILVER_DIR = Path(DATALAKE) / "silver" if not str(DATALAKE).startswith("s3://") else None
 
+MODO_AMOSTRA = Path(str(DATALAKE)) == AMOSTRA_DIR
+
 DATA_DIR = PROJECT_ROOT / "data"
 RAW_DIR = DATA_DIR / "raw"            # fontes externas baixadas (IBGE via GitHub)
 EXTERNAL_DIR = DATA_DIR / "external"  # fontes externas tratadas
-PROCESSED_DIR = DATA_DIR / "processed"
 ANALYTIC_DIR = DATA_DIR / "analytic"  # camada analítica derivada do lake oficial
-MODELS_DIR = PROJECT_ROOT / "models"
-REPORTS_DIR = PROJECT_ROOT / "reports"
-IMAGES_DIR = PROJECT_ROOT / "images"
+if MODO_AMOSTRA:
+    # Saídas separadas: a amostra nunca sobrescreve os resultados oficiais versionados
+    _OUT = PROJECT_ROOT / "outputs_amostra"
+    PROCESSED_DIR, MODELS_DIR, REPORTS_DIR, IMAGES_DIR = (_OUT / d for d in ("processed", "models", "reports", "images"))
+    print(f"[config] MODO AMOSTRA: data lake = {AMOSTRA_DIR} · saídas em {_OUT}")
+else:
+    PROCESSED_DIR = DATA_DIR / "processed"
+    MODELS_DIR = PROJECT_ROOT / "models"
+    REPORTS_DIR = PROJECT_ROOT / "reports"
+    IMAGES_DIR = PROJECT_ROOT / "images"
 
 for _d in (EXTERNAL_DIR, PROCESSED_DIR, MODELS_DIR, REPORTS_DIR, IMAGES_DIR):
     _d.mkdir(parents=True, exist_ok=True)

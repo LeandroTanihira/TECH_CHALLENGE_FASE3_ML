@@ -12,6 +12,10 @@ alfabetizado, identificar os municípios com maior risco de não atingir as meta
 > (BigQuery/Base dos Dados → S3 Bronze → Glue Silver/Gold → Athena). Esta Fase 3 consome as camadas Silver/Gold produzidas por ela
 > (§ 3 explica a integração).
 
+## Autor
+
+**Leandro Tanihira** — RM: _____ (projeto desenvolvido individualmente)
+
 ---
 
 ## Sumário
@@ -84,11 +88,31 @@ O layout é detectado automaticamente (`src/config.py`):
 | 3 | Cópia local do bucket | `aws s3 sync s3://<bucket>/silver data/fase2_oficial/silver` (idem para `gold`) |
 | 4 | Execução local da pipeline | pasta irmã `../Desafio - Fase 2/datalake` |
 
-> ⚠️ **Microdados de alunos:** o extrator da Fase 2 usa `TABLESAMPLE SYSTEM (2 PERCENT)` para `alunos`
-> (`QUERY_OVERRIDES` em `src/config.py` daquele repositório). Para o modelo de alunos é necessário reextrair a tabela **completa**
-> (remover o override e reexecutar Bronze → Silver). O adaptador emite um aviso se detectar a amostra.
-> O teste `tests/test_fase2_adapter.py` recria o layout oficial a partir dos CSVs da Base dos Dados e garante que a base de modelagem
-> gerada pelos dois caminhos é **idêntica**.
+### 3.3 De onde veio a base completa de alunos
+
+O extrator AWS da Fase 2 usa `TABLESAMPLE SYSTEM (2 PERCENT)` para `alunos` (`QUERY_OVERRIDES` em `src/config.py` daquele
+repositório): a Silver publicada no S3 tem só ~2% dos microdados, suficiente para a Gold agregada da Fase 2, mas não para modelar alunos.
+
+Por isso, **os resultados desta entrega foram gerados com a tabela completa**, processada pela **mesma arquitetura medalhão da Fase 2
+(Bronze → Silver → Gold), executada localmente**:
+
+| Etapa | Detalhe |
+|---|---|
+| Fonte | tabela `br_inep_avaliacao_alfabetizacao.alunos` da Base dos Dados, exportada **sem amostragem** (3.868.000 registros: 1.747.439 em 2023 e 2.120.560 em 2024), junto com `municipio`, `uf` e as três tabelas de metas |
+| Bronze → Silver | mesmas regras da Fase 2: deduplicação por `ano + id_aluno`, `id_municipio` com 7 dígitos, `rede` decodificada, `sigla_uf` derivada do código IBGE, proficiência nula para ausentes |
+| Silver → Gold | tabelas analíticas da §3.1, com quality gate antes da Gold |
+
+**Equivalência com o caminho AWS:** `tests/test_fase2_adapter.py` recria o layout oficial (Silver/Gold da pipeline Glue) a partir desses
+mesmos CSVs, e o adaptador reproduz a `gold/comparacao_metas_resultados` com diferença zero. A base de modelagem gerada pelos dois
+caminhos é **idêntica** (1.852.788 alunos, mesmas features). Para rodar 100% pela AWS, basta remover o override de `alunos` no
+extrator da Fase 2 e reexecutar Bronze → Silver. O adaptador avisa se detectar a amostra de 2%.
+
+### 3.4 Sem acesso ao data lake? Modo amostra
+
+O repositório versiona uma **amostra do data lake** em [`data/amostra/`](data/amostra/README.md): Gold completa mais todos os alunos de
+555 municípios sorteados (10% por UF), cerca de 7 MB. Quando nenhum data lake é encontrado, a pipeline e os notebooks usam essa amostra
+automaticamente (ou com `FASE3_AMOSTRA=1`). As saídas vão para `outputs_amostra/`, sem sobrescrever os resultados oficiais. Com a amostra
+o fluxo é idêntico, mas as métricas do modelo de alunos ficam um pouco menores (AUC ≈ 0,62), porque há menos municípios para treinar e testar.
 
 ## 4. Análise exploratória e hipóteses
 
@@ -179,6 +203,9 @@ transparência pesaram mais.
 | Teste — regressão logística | 0,662 | 0,751 | 0,592 | 0,390 | 0,221 |
 
 * Estabilidade: desvio da AUC entre sementes = 0,0005; entre folds < 0,01. Probabilidades bem **calibradas**.
+* **Validação (0,639) abaixo do teste (0,665):** validação e teste são conjuntos **diferentes de municípios** (828 cada), sorteados por
+  grupo. A diferença reflete a heterogeneidade entre grupos de municípios, não sobreajuste. Na CV agrupada (5 folds de municípios), a AUC
+  varia ±0,009 em torno de 0,666; o limiar foi escolhido na validação e o teste foi usado uma única vez, sem ajuste posterior.
 * **Agregado por município** (753 municípios de teste com ≥ 30 alunos): correlação **0,81** com a taxa real 2024, erro médio **8,0 p.p.**,
   viés ≈ 0 — **29% menos erro** que a regra "repetir a taxa do ano anterior" (11,4 p.p.).
 
@@ -258,6 +285,7 @@ tech-challenge-fase3/
 ├── data/
 │   ├── raw/            # fontes externas baixadas (IBGE) — geradas, não versionadas
 │   ├── external/       # municipios_enriquecidos.csv (IBGE tratado)
+│   ├── amostra/        # amostra versionada do data lake (Gold + alunos de 555 municípios)
 │   ├── analytic/       # camada analítica derivada do lake oficial da Fase 2 (gerada)
 │   └── processed/      # base de modelagem e predições (geradas)
 ├── notebooks/
@@ -291,6 +319,7 @@ pip install -r requirements.txt
 set DATALAKE_BUCKET=tech-challenge-alfabetizacao-<sufixo>   # Linux/Mac: export ...
 # Opção B — cópia local:  aws s3 sync s3://<bucket>/silver data/fase2_oficial/silver  (e gold)
 # Opção C — pasta irmã "../Desafio - Fase 2/datalake" (detectada automaticamente)
+# Opção D — nenhuma das anteriores: usa data/amostra/ automaticamente (saídas em outputs_amostra/)
 
 python -m src.main            # pipeline completa (~40 min em 2 núcleos)  |  --fast para teste rápido
 jupyter lab notebooks/        # ou execute os notebooks 01 → 04
@@ -301,7 +330,7 @@ Reprodutibilidade: semente fixa (`RANDOM_STATE=42`) em splits, CV, busca e model
 
 ## 14. Versionamento e colaboração
 
-Fluxo **Git Flow simplificado**, igual ao da Fase 2: `main` protegida + branches de feature integradas via **Pull Request** com revisão.
+Fluxo **Git Flow simplificado**, igual ao da Fase 2: `main` protegida + branches de feature integradas via **Pull Request**, cada uma validada pelo CI antes do merge.
 
 | Branch | Conteúdo |
 |---|---|

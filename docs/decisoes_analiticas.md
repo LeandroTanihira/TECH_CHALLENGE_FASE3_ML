@@ -5,7 +5,7 @@ Cada decisão traz contexto, alternativas consideradas e consequência. Ordem cr
 | # | Decisão | Alternativas | Motivo | Evidência |
 |---|---|---|---|---|
 | 01 | Consumir o data lake da Fase 2 ([repositório](https://github.com/postechfiap018-ctrl/TECH_CHALLENGE_FASE2_PIPELINE)) via **adaptador** que gera uma camada analítica | Reescrever a Fase 3 só sobre as 3 tabelas Gold oficiais | A Gold oficial é agregada (sem proficiência, participação ou histórico por rede); a Silver oficial tem tudo o que é necessário. O adaptador é validado contra `gold/comparacao_metas_resultados` | `tests/test_fase2_adapter.py`; diferença máxima = 0 |
-| 02 | Reextrair `alunos` completo (sem `TABLESAMPLE 2%`) | Usar a amostra de 2% | Com 2% (~40 mil alunos/ano), o contexto por escola fica inviável e o treino perde poder | aviso emitido pelo adaptador |
+| 02 | Usar a tabela `alunos` **completa** (export da Base dos Dados sem amostragem, processado pela arquitetura medalhão da Fase 2 executada localmente) em vez da Silver AWS com `TABLESAMPLE 2%` | Usar a amostra de 2% | Com 2% (~40 mil alunos/ano), o contexto por escola fica inviável e o treino perde poder. A equivalência entre os dois caminhos é testada | README §3.3; `tests/test_fase2_adapter.py` |
 | 03 | Unidade de modelagem = **aluno presente** | Incluir ausentes | Ausentes têm `alfabetizado=0` sem terem feito a prova → alvo falso | EDA §2 |
 | 04 | **Contexto T-1 → alvo T** (2023 → 2024) | Usar taxas do mesmo ano | Taxas do mesmo ano contêm o resultado do próprio aluno (vazamento) e não existem no momento da decisão | EDA §8 |
 | 05 | Remover `proficiencia`, `preenchimento_caderno`, `peso_aluno`, `presenca` | — | Pós-prova; `proficiencia ≥ 743` define o alvo (100% de concordância) | EDA §8 |
@@ -23,3 +23,4 @@ Cada decisão traz contexto, alternativas consideradas e consequência. Ordem cr
 | 17 | K-Means com **k = 4** | k pela maior silhueta (k=2) | Silhueta varia pouco entre 4 e 7; 4 perfis são acionáveis para gestão | notebook 04 §3 |
 | 18 | Não usar 2025 (streaming simulado da Fase 2) como alvo | Usar | Dados sintéticos | EDA §1 |
 | 19 | Comunicar o modelo de alunos como **risco contextual**, não diagnóstico individual | — | AUC ≈ 0,66 no aluno; agregação municipal é precisa (r = 0,81) | notebook 03 §4 |
+| 20 | Versionar uma **amostra do data lake** (`data/amostra/`) com saídas isoladas | Exigir o data lake da Fase 2 para qualquer execução | Quem corrige consegue rodar pipeline e notebooks sem AWS, sem sobrescrever os resultados oficiais | README §3.4 |
